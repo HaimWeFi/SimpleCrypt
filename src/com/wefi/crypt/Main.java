@@ -14,7 +14,7 @@ public class Main {
 	private static final String  PUBK 	= "-pubk=";
 
 	public static void main(String[] args) {
-		
+		System.out.println("SimpleCrypt V2.0");
 		List<String> argLst = Arrays.asList(args);
 		
 		boolean genKeys = false;
