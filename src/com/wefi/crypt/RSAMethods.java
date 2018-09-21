@@ -1,15 +1,19 @@
 package com.wefi.crypt;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.spec.KeySpec;
+import java.security.spec.MGF1ParameterSpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 import javax.crypto.Cipher;
+import javax.crypto.spec.OAEPParameterSpec;
+import javax.crypto.spec.PSource.PSpecified;
 
 public class RSAMethods {
 	
@@ -43,11 +47,12 @@ public class RSAMethods {
 
 	        // get an RSA cipher object and print the provider
 	        final Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWITHSHA-256ANDMGF1PADDING");
-	        cipher.init(Cipher.DECRYPT_MODE, key);
-
+	        OAEPParameterSpec oaepParams = new OAEPParameterSpec("SHA-256", "MGF1", new MGF1ParameterSpec("SHA-256"), PSpecified.DEFAULT);
+	        cipher.init(Cipher.DECRYPT_MODE, key, oaepParams);
+	        
 	        byte[] encryptedBytes = Base64.getDecoder().decode(encryptedBase64);
 	        byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
-	        decryptedString = new String(decryptedBytes);
+	        decryptedString = new String(decryptedBytes, StandardCharsets.UTF_8);
 	    } catch (Exception e) {
 	    	e.printStackTrace();
 	    }
@@ -73,5 +78,4 @@ public class RSAMethods {
 	    }
 	    return encryptedBase64.replaceAll("(\\r\\n|\\r|\\n)", "");
 	}
-
 }
